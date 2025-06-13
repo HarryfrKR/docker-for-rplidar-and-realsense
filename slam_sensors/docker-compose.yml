@@ -1,0 +1,43 @@
+services:
+  rplidar:
+    build:
+      context: ./ros2_rplidar_docker    # Directory containing the rplidar Dockerfile
+      dockerfile: Dockerfile
+    image: rplidar:latest
+    container_name: rplidar
+    privileged: true
+    network_mode: host
+    environment:
+      - ROS_DOMAIN_ID=42
+      - ROS_LOCALHOST_ONLY=0
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      - /dev:/dev
+    device_cgroup_rules:
+      - 'c 81:* rmw'
+      - 'c 189:* rmw'
+    command: ros2 launch sllidar_ros2 sllidar_c1_launch.py
+
+  realsense:
+    build:
+      context: ./ros2_realsense_docker    # Directory containing the realsense Dockerfile
+      dockerfile: Dockerfile
+    image: realsense-camera:latest
+    container_name: realsense
+    privileged: true
+    network_mode: host
+    environment:
+      - ROS_DOMAIN_ID=42
+      - ROS_LOCALHOST_ONLY=0
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      - /dev:/dev
+    device_cgroup_rules:
+      - 'c 81:* rmw'
+      - 'c 189:* rmw'
+    command: ros2 launch realsense2_camera rs_launch.py pointcloud.enable:=true
+

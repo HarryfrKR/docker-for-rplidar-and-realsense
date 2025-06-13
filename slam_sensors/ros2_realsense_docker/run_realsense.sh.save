@@ -1,0 +1,17 @@
+docker run -it --rm \
+-v /dev:/dev \
+--device-cgroup-rule 'c 81:* rmw' \
+--device-cgroup-rule 'c 189:* rmw' \
+--runtime nvidia \
+-e DISPLAY="$DISPLAY" \
+-e QT_QPA_PLATFORM="" \
+-e QT_X11_NO_MITSHM="1" \
+-e LIBGL_ALWAYS_INDIRECT=1 \
+-e XAUTHORITY="$XAUTHORITY" \
+-e NVIDIA_VISIBLE_DEVICES="all" \
+-e NVIDIA_DRIVER_CAPABILITIES="all" \
+-e LIBGL_ALWAYS_INDIRECT=1 \
+--privileged \
+-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+-v /tmp/.docker.xauth:/tmp/.docker.xauth:rw \
+04d2f8b15578 bash
