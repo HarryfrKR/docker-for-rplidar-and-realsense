@@ -1,9 +1,14 @@
 FROM ros:humble-ros-base
 
+ENV WS_DIR = "ros2_ws"
+ENV ROS_DOMAIN_ID=42
+ENV ROS_LOCALHOST_ONLY=0
+
+WORKDIR /ros2_ws
+
 SHELL ["/bin/bash", "-c"]
 
-ENV ROS_DISTRO=humble
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Install required dependencies
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
@@ -18,8 +23,6 @@ RUN apt-get update && apt-get install -qq -y --no-install-recommends \
     ros-${ROS_DISTRO}-ament-cmake \
     ros-humble-rmw-cyclonedds-cpp \
     && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /ros2_ws
 
 # Install ROS 2 dependencies
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
@@ -38,17 +41,8 @@ RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
  && rosdep install --from-paths src --ignore-src -r -y \
  && colcon build --symlink-install
 
-# Source the workspace setup in the container's environment
-RUN echo "source /ros2_ws/install/setup.bash" >> /root/.bashrc
+ARG DEBIAN_FRONTEND=dialog
 
+RUN echo "source /ros2_ws/install/setup.bash" >> /root/.bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
 
-# Set entrypoint
-# ENTRYPOINT ["/bin/bash", "-c", "source /opt/ros/$ROS_DISTRO/setup.bash && source /ros2_ws/install/setup.bash && bash"]
-
-# ENV DEBIAN_FRONTEND=dialog
-# ENV ROS_DOMAIN_ID=42
-# ENV ROS_LOCALHOST_ONLY=0
-# ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-
-# CMD [ "rs-enumerate-devices", "--compact" ]
