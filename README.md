@@ -4,7 +4,7 @@ Verified with following HW :
 * Raspberry 5 (Ubuntu 24.04 LTS)
 
 # How to run
-## prerequisites
+## Prerequisites
 Docker v28.0.1
 
 ## Build docker containers
